@@ -1,38 +1,23 @@
 """
-Movie ingestion pipeline.
-
-Reads movies.csv, validates it, and stores it as Parquet
-in the Bronze layer.
+Movie dataset ingestion entry point.
 """
 
-from src.ingestion.validator import validate_csv
-from src.utils.logger import get_logger
-from src.utils.paths import BRONZE_DATA_DIR, RAW_DATA_DIR
+from src.ingestion.ingest_dataset import ingest_dataset
 
-logger = get_logger(__name__)
+
+MOVIES_REQUIRED_COLUMNS = [
+    "movieId",
+    "title",
+    "genres",
+]
 
 
 def ingest_movies() -> None:
-    """Ingest movies dataset into Bronze layer."""
+    """Ingest the MovieLens movies dataset."""
 
-    movies_df = validate_csv(
-        RAW_DATA_DIR / "movies.csv",
-        [
-            "movieId",
-            "title",
-            "genres",
-        ],
-    )
-
-    output_path = BRONZE_DATA_DIR / "movies.parquet"
-
-    movies_df.to_parquet(
-        output_path,
-        index=False,
-    )
-
-    logger.info(
-        f"Bronze dataset created: {output_path}"
+    ingest_dataset(
+        dataset_name="movies",
+        required_columns=MOVIES_REQUIRED_COLUMNS,
     )
 
 
