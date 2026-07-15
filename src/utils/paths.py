@@ -25,9 +25,11 @@ NOTEBOOKS_DIR = PROJECT_ROOT / "notebooks"
 
 # Create directories if they don't exist
 for directory in [
+    RAW_DATA_DIR,
     BRONZE_DATA_DIR,
     SILVER_DATA_DIR,
     GOLD_DATA_DIR,
     LOGS_DIR,
+    MODELS_DIR
 ]:
     directory.mkdir(parents=True, exist_ok=True)
