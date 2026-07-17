@@ -6,6 +6,18 @@ from src.gold.movie_metrics import (
     build_movie_metrics,
     write_movie_metrics,
 )
+from src.gold.genre_metrics import (
+    build_genre_metrics,
+    write_genre_metrics,
+)
+from src.gold.user_preferences import (
+    build_user_preferences,
+    write_user_preferences,
+)
+from src.gold.recommendation_features import (
+    build_recommendation_features,
+    write_recommendation_features,
+)
 from src.spark_jobs.spark_session import (
     create_spark_session,
 )
@@ -34,6 +46,36 @@ def run_gold() -> None:
 
         write_movie_metrics(
             movie_metrics
+        )
+
+        genre_metrics = (
+            build_genre_metrics(
+                spark
+            )
+        )
+
+        write_genre_metrics(
+            genre_metrics
+        )
+
+        user_preferences = (
+            build_user_preferences(
+                spark
+            )
+        )
+
+        write_user_preferences(
+            user_preferences
+        )
+
+        recommendation_features = (
+            build_recommendation_features(
+                spark
+            )
+        )
+
+        write_recommendation_features(
+            recommendation_features
         )
 
     finally:
