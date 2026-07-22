@@ -15,27 +15,16 @@ from src.utils.paths import (
 
 logger = get_logger(__name__)
 
+
 def build_user_preferences(
     spark: SparkSession,
 ) -> DataFrame:
 
-    logger.info(
-        "Reading Silver datasets."
-    )
+    logger.info("Reading Silver datasets.")
 
-    movies = spark.read.parquet(
-        str(
-            SILVER_DATA_DIR /
-            "movies.parquet"
-        )
-    )
+    movies = spark.read.parquet(str(SILVER_DATA_DIR / "movies.parquet"))
 
-    ratings = spark.read.parquet(
-        str(
-            SILVER_DATA_DIR /
-            "ratings.parquet"
-        )
-    )
+    ratings = spark.read.parquet(str(SILVER_DATA_DIR / "ratings.parquet"))
 
     ratings = ratings.join(
         movies.select(
@@ -46,108 +35,60 @@ def build_user_preferences(
         how="left",
     )
 
-    user_stats = (
-        ratings
-        .groupBy(
-            "userId"
-        )
-        .agg(
-            F.count("*").alias(
-                "moviesRated"
-            ),
-
-            F.round(
-                F.avg("rating"),
-                3,
-            ).alias(
-                "averageRatingGiven"
-            ),
-
-            F.min("rating").alias(
-                "minimumRating"
-            ),
-
-            F.max("rating").alias(
-                "maximumRating"
-            ),
-
-            F.round(
-                F.variance("rating"),
-                3,
-            ).alias(
-                "ratingVariance"
-            ),
-        )
+    user_stats = ratings.groupBy("userId").agg(
+        F.count("*").alias("moviesRated"),
+        F.round(
+            F.avg("rating"),
+            3,
+        ).alias("averageRatingGiven"),
+        F.min("rating").alias("minimumRating"),
+        F.max("rating").alias("maximumRating"),
+        F.round(
+            F.variance("rating"),
+            3,
+        ).alias("ratingVariance"),
     )
 
-    genres = (
-        ratings
-        .withColumn(
-            "genre",
-            F.split(
-                "genres",
-                "\\|",
-            ),
-        )
+    genres = ratings.withColumn(
+        "genre",
+        F.split(
+            "genres",
+            "\\|",
+        ),
     )
 
     genres = genres.select(
         "userId",
-        F.explode(
-            "genre"
-        ).alias(
-            "genreName"
-        ),
+        F.explode("genre").alias("genreName"),
     )
 
-    genre_counts = (
-        genres
-        .groupBy(
-            "userId",
-            "genreName",
-        )
-        .count()
-    )
+    genre_counts = genres.groupBy(
+        "userId",
+        "genreName",
+    ).count()
 
-    window = Window.partitionBy(
-        "userId"
-    ).orderBy(
+    window = Window.partitionBy("userId").orderBy(
         F.desc("count"),
         F.asc("genreName"),
     )
 
     favorite_genre = (
-        genre_counts
-        .withColumn(
+        genre_counts.withColumn(
             "rank",
-            F.row_number().over(
-                window
-            ),
+            F.row_number().over(window),
         )
-        .filter(
-            F.col("rank") == 1
-        )
+        .filter(F.col("rank") == 1)
         .select(
             "userId",
-            F.col(
-                "genreName"
-            ).alias(
-                "favoriteGenre"
-            ),
+            F.col("genreName").alias("favoriteGenre"),
         )
     )
 
-    preferences = (
-        user_stats
-        .join(
-            favorite_genre,
-            on="userId",
-            how="left",
-        )
-        .orderBy(
-            "userId"
-        )
-    )
+    preferences = user_stats.join(
+        favorite_genre,
+        on="userId",
+        how="left",
+    ).orderBy("userId")
 
     logger.info(
         "User preferences generated: %d rows",
@@ -156,23 +97,14 @@ def build_user_preferences(
 
     return preferences
 
+
 def write_user_preferences(
     dataframe: DataFrame,
 ):
 
-    output = (
-        GOLD_DATA_DIR /
-        "user_preferences.parquet"
-    )
+    output = GOLD_DATA_DIR / "user_preferences.parquet"
 
-    (
-        dataframe
-        .write
-        .mode("overwrite")
-        .parquet(
-            str(output)
-        )
-    )
+    (dataframe.write.mode("overwrite").parquet(str(output)))
 
     logger.info(
         "User preferences written: %s",

@@ -30,6 +30,6 @@ for directory in [
     SILVER_DATA_DIR,
     GOLD_DATA_DIR,
     LOGS_DIR,
-    MODELS_DIR
+    MODELS_DIR,
 ]:
     directory.mkdir(parents=True, exist_ok=True)

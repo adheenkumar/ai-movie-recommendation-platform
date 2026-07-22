@@ -31,8 +31,7 @@ def create_spark_session(
     )
 
     spark = (
-        SparkSession.builder
-        .appName(app_name)
+        SparkSession.builder.appName(app_name)
         .master("local[*]")
         .config(
             "spark.sql.session.timeZone",
@@ -52,8 +51,7 @@ def create_spark_session(
     spark.sparkContext.setLogLevel("WARN")
 
     logger.info(
-        "Spark session created successfully | "
-        "version=%s | app=%s",
+        "Spark session created successfully | " "version=%s | app=%s",
         spark.version,
         app_name,
     )

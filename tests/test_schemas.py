@@ -30,10 +30,7 @@ def test_movies_schema() -> None:
     assert MOVIES_SCHEMA["genres"].dataType == StringType()
     assert MOVIES_SCHEMA["genres"].nullable is True
 
-    assert (
-        MOVIES_SCHEMA["releaseYear"].dataType
-        == IntegerType()
-    )
+    assert MOVIES_SCHEMA["releaseYear"].dataType == IntegerType()
     assert MOVIES_SCHEMA["releaseYear"].nullable is True
 
 
@@ -44,15 +41,9 @@ def test_ratings_schema() -> None:
     assert RATINGS_SCHEMA["movieId"].dataType == LongType()
     assert RATINGS_SCHEMA["rating"].dataType == DoubleType()
 
-    assert (
-        RATINGS_SCHEMA["sourceTimestamp"].dataType
-        == LongType()
-    )
+    assert RATINGS_SCHEMA["sourceTimestamp"].dataType == LongType()
 
-    assert (
-        RATINGS_SCHEMA["ratingTimestamp"].dataType
-        == TimestampType()
-    )
+    assert RATINGS_SCHEMA["ratingTimestamp"].dataType == TimestampType()
 
 
 def test_tags_schema() -> None:
@@ -62,15 +53,9 @@ def test_tags_schema() -> None:
     assert TAGS_SCHEMA["movieId"].dataType == LongType()
     assert TAGS_SCHEMA["tag"].dataType == StringType()
 
-    assert (
-        TAGS_SCHEMA["sourceTimestamp"].dataType
-        == LongType()
-    )
+    assert TAGS_SCHEMA["sourceTimestamp"].dataType == LongType()
 
-    assert (
-        TAGS_SCHEMA["tagTimestamp"].dataType
-        == TimestampType()
-    )
+    assert TAGS_SCHEMA["tagTimestamp"].dataType == TimestampType()
 
 
 def test_links_schema() -> None:

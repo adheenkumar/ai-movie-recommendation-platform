@@ -4,7 +4,6 @@ Ratings dataset ingestion entry point.
 
 from src.ingestion.ingest_dataset import ingest_dataset
 
-
 RATINGS_REQUIRED_COLUMNS = [
     "userId",
     "movieId",

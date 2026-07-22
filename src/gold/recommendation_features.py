@@ -22,63 +22,32 @@ def build_recommendation_features(
     Build a feature dataset for semantic search and recommendation.
     """
 
-    logger.info(
-        "Reading Gold movie metrics."
+    logger.info("Reading Gold movie metrics.")
+
+    movie_metrics = spark.read.parquet(str(GOLD_DATA_DIR / "movie_metrics.parquet"))
+
+    logger.info("Reading Silver tags.")
+
+    tags = spark.read.parquet(str(SILVER_DATA_DIR / "tags.parquet"))
+
+    logger.info("Aggregating movie tags.")
+
+    tag_features = tags.groupBy("movieId").agg(
+        F.concat_ws(
+            ", ",
+            F.array_sort(F.collect_set("tag")),
+        ).alias("tags")
     )
 
-    movie_metrics = spark.read.parquet(
-        str(
-            GOLD_DATA_DIR /
-            "movie_metrics.parquet"
-        )
+    logger.info("Joining movie metrics with tags.")
+
+    features = movie_metrics.join(
+        tag_features,
+        on="movieId",
+        how="left",
     )
 
-    logger.info(
-        "Reading Silver tags."
-    )
-
-    tags = spark.read.parquet(
-        str(
-            SILVER_DATA_DIR /
-            "tags.parquet"
-        )
-    )
-
-    logger.info(
-        "Aggregating movie tags."
-    )
-
-    tag_features = (
-        tags
-        .groupBy("movieId")
-        .agg(
-            F.concat_ws(
-                ", ",
-                F.array_sort(
-                    F.collect_set("tag")
-                ),
-            ).alias("tags")
-        )
-    )
-
-    logger.info(
-        "Joining movie metrics with tags."
-    )
-
-    features = (
-        movie_metrics
-        .join(
-            tag_features,
-            on="movieId",
-            how="left",
-        )
-    )
-
-    features = features.fillna(
-        {
-            "tags": "No tags available"
-        }
-    )
+    features = features.fillna({"tags": "No tags available"})
 
     # Convert MovieLens genre separator into readable text
     genres_text = F.regexp_replace(
@@ -87,9 +56,7 @@ def build_recommendation_features(
         ", ",
     )
 
-    logger.info(
-        "Generating content text."
-    )
+    logger.info("Generating content text.")
 
     features = features.withColumn(
         "contentText",
@@ -159,18 +126,9 @@ def write_recommendation_features(
     Write recommendation features to the Gold layer.
     """
 
-    output = (
-        GOLD_DATA_DIR /
-        "recommendation_features.parquet"
-    )
+    output = GOLD_DATA_DIR / "recommendation_features.parquet"
 
-    (
-        dataframe.write
-        .mode("overwrite")
-        .parquet(
-            str(output)
-        )
-    )
+    (dataframe.write.mode("overwrite").parquet(str(output)))
 
     logger.info(
         "Recommendation features written: %s",

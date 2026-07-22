@@ -37,13 +37,9 @@ def generate_quality_report(
         "column_count": len(dataframe.columns),
         "duplicate_rows": int(dataframe.duplicated().sum()),
         "total_null_values": int(dataframe.isna().sum().sum()),
-        "null_counts": {
-            column: int(count)
-            for column, count in null_counts.items()
-        },
+        "null_counts": {column: int(count) for column, count in null_counts.items()},
         "data_types": {
-            column: str(dtype)
-            for column, dtype in dataframe.dtypes.items()
+            column: str(dtype) for column, dtype in dataframe.dtypes.items()
         },
     }
 

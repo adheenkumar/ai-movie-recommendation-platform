@@ -10,7 +10,6 @@ from src.spark_jobs.spark_session import (
 )
 from src.utils.paths import SILVER_DATA_DIR
 
-
 DATASETS = [
     "movies",
     "ratings",
@@ -22,28 +21,17 @@ DATASETS = [
 def inspect_silver_data() -> None:
     """Inspect generated Silver datasets."""
 
-    spark = create_spark_session(
-        "Silver Data Inspection"
-    )
+    spark = create_spark_session("Silver Data Inspection")
 
     try:
         for dataset_name in DATASETS:
-            input_path = (
-                SILVER_DATA_DIR
-                / f"{dataset_name}.parquet"
-            )
+            input_path = SILVER_DATA_DIR / f"{dataset_name}.parquet"
 
-            dataframe = spark.read.parquet(
-                str(input_path)
-            )
+            dataframe = spark.read.parquet(str(input_path))
 
-            print(
-                f"\n===== {dataset_name.upper()} ====="
-            )
+            print(f"\n===== {dataset_name.upper()} =====")
 
-            print(
-                f"Row count: {dataframe.count():,}"
-            )
+            print(f"Row count: {dataframe.count():,}")
 
             dataframe.printSchema()
 

@@ -15,7 +15,6 @@ from pyspark.sql.types import (
     TimestampType,
 )
 
-
 MOVIES_SCHEMA = StructType(
     [
         StructField(

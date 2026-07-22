@@ -4,7 +4,6 @@ Tags dataset ingestion entry point.
 
 from src.ingestion.ingest_dataset import ingest_dataset
 
-
 TAGS_REQUIRED_COLUMNS = [
     "userId",
     "movieId",

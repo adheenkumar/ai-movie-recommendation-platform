@@ -31,59 +31,31 @@ def run_gold() -> None:
     Run the Gold layer.
     """
 
-    logger.info(
-        "Starting Gold pipeline."
-    )
+    logger.info("Starting Gold pipeline.")
 
-    spark = create_spark_session(
-        "Movie Recommendation Gold"
-    )
+    spark = create_spark_session("Movie Recommendation Gold")
 
     try:
-        movie_metrics = build_movie_metrics(
-            spark
-        )
+        movie_metrics = build_movie_metrics(spark)
 
-        write_movie_metrics(
-            movie_metrics
-        )
+        write_movie_metrics(movie_metrics)
 
-        genre_metrics = (
-            build_genre_metrics(
-                spark
-            )
-        )
+        genre_metrics = build_genre_metrics(spark)
 
-        write_genre_metrics(
-            genre_metrics
-        )
+        write_genre_metrics(genre_metrics)
 
-        user_preferences = (
-            build_user_preferences(
-                spark
-            )
-        )
+        user_preferences = build_user_preferences(spark)
 
-        write_user_preferences(
-            user_preferences
-        )
+        write_user_preferences(user_preferences)
 
-        recommendation_features = (
-            build_recommendation_features(
-                spark
-            )
-        )
+        recommendation_features = build_recommendation_features(spark)
 
-        write_recommendation_features(
-            recommendation_features
-        )
+        write_recommendation_features(recommendation_features)
 
     finally:
         spark.stop()
 
-    logger.info(
-        "Gold pipeline completed."
-    )
+    logger.info("Gold pipeline completed.")
 
 
 if __name__ == "__main__":

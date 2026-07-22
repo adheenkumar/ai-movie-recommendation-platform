@@ -23,29 +23,20 @@ DATASETS = [
 def inspect_bronze_schemas() -> None:
     """Inspect schemas for all Bronze datasets."""
 
-    spark = create_spark_session(
-        "Bronze Schema Inspection"
-    )
+    spark = create_spark_session("Bronze Schema Inspection")
 
     try:
         for dataset_name in DATASETS:
-            input_path = (
-                BRONZE_DATA_DIR
-                / f"{dataset_name}.parquet"
-            )
+            input_path = BRONZE_DATA_DIR / f"{dataset_name}.parquet"
 
             logger.info(
                 "Inspecting Bronze schema: %s",
                 dataset_name,
             )
 
-            dataframe = spark.read.parquet(
-                str(input_path)
-            )
+            dataframe = spark.read.parquet(str(input_path))
 
-            print(
-                f"\n===== {dataset_name.upper()} ====="
-            )
+            print(f"\n===== {dataset_name.upper()} =====")
 
             dataframe.printSchema()
 

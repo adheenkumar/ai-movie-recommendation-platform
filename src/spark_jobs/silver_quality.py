@@ -46,9 +46,7 @@ def validate_movies_quality(
         column_name="title",
     )
 
-    logger.info(
-        "Silver quality validation passed | dataset=movies"
-    )
+    logger.info("Silver quality validation passed | dataset=movies")
 
 
 def validate_ratings_quality(
@@ -86,9 +84,7 @@ def validate_ratings_quality(
         ],
     )
 
-    logger.info(
-        "Silver quality validation passed | dataset=ratings"
-    )
+    logger.info("Silver quality validation passed | dataset=ratings")
 
 
 def validate_tags_quality(
@@ -125,9 +121,7 @@ def validate_tags_quality(
         ],
     )
 
-    logger.info(
-        "Silver quality validation passed | dataset=tags"
-    )
+    logger.info("Silver quality validation passed | dataset=tags")
 
 
 def validate_links_quality(
@@ -152,6 +146,4 @@ def validate_links_quality(
         ],
     )
 
-    logger.info(
-        "Silver quality validation passed | dataset=links"
-    )
+    logger.info("Silver quality validation passed | dataset=links")

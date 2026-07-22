@@ -34,10 +34,6 @@ def weighted_rating(
     if vote_count <= 0:
         return global_average
 
-    return (
-        (vote_count / (vote_count + minimum_votes))
-        * average_rating
-        +
-        (minimum_votes / (vote_count + minimum_votes))
-        * global_average
-    )
+    return (vote_count / (vote_count + minimum_votes)) * average_rating + (
+        minimum_votes / (vote_count + minimum_votes)
+    ) * global_average

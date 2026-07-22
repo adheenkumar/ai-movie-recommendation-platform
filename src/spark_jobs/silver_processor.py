@@ -51,24 +51,16 @@ def process_silver_dataset(
         quality_validator: Dataset data quality validator.
     """
 
-    input_path = (
-        BRONZE_DATA_DIR
-        / f"{dataset_name}.parquet"
-    )
+    input_path = BRONZE_DATA_DIR / f"{dataset_name}.parquet"
 
-    output_path = (
-        SILVER_DATA_DIR
-        / f"{dataset_name}.parquet"
-    )
+    output_path = SILVER_DATA_DIR / f"{dataset_name}.parquet"
 
     logger.info(
         "Starting Silver processing: %s",
         dataset_name,
     )
 
-    bronze_dataframe = spark.read.parquet(
-        str(input_path)
-    )
+    bronze_dataframe = spark.read.parquet(str(input_path))
 
     bronze_row_count = bronze_dataframe.count()
 
@@ -78,9 +70,7 @@ def process_silver_dataset(
         bronze_row_count,
     )
 
-    silver_dataframe = transformation(
-        bronze_dataframe
-    )
+    silver_dataframe = transformation(bronze_dataframe)
 
     validate_schema(
         dataset_name=dataset_name,
@@ -88,9 +78,7 @@ def process_silver_dataset(
         expected_schema=expected_schema,
     )
 
-    quality_validator(
-        silver_dataframe
-    )
+    quality_validator(silver_dataframe)
 
     silver_row_count = silver_dataframe.count()
 
@@ -102,12 +90,7 @@ def process_silver_dataset(
         silver_row_count,
     )
 
-    (
-        silver_dataframe
-        .write
-        .mode("overwrite")
-        .parquet(str(output_path))
-    )
+    (silver_dataframe.write.mode("overwrite").parquet(str(output_path)))
 
     logger.info(
         "Silver dataset written | dataset=%s | path=%s",

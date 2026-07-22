@@ -86,13 +86,9 @@ SILVER_TASKS: list[SilverTask] = [
 def run_silver_etl() -> None:
     """Run the complete Bronze-to-Silver ETL pipeline."""
 
-    logger.info(
-        "Starting Silver ETL pipeline"
-    )
+    logger.info("Starting Silver ETL pipeline")
 
-    spark = create_spark_session(
-        "Movie Recommendation Silver ETL"
-    )
+    spark = create_spark_session("Movie Recommendation Silver ETL")
 
     try:
         for (
@@ -122,9 +118,7 @@ def run_silver_etl() -> None:
     finally:
         spark.stop()
 
-    logger.info(
-        "Silver ETL pipeline completed successfully"
-    )
+    logger.info("Silver ETL pipeline completed successfully")
 
 
 if __name__ == "__main__":

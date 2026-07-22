@@ -43,22 +43,13 @@ def validate_csv(
         raise ValueError("CSV file is empty.")
 
     missing_columns = [
-        column
-        for column in required_columns
-        if column not in df.columns
+        column for column in required_columns if column not in df.columns
     ]
 
     if missing_columns:
-        logger.error(
-            f"Missing columns: {missing_columns}"
-        )
-        raise ValueError(
-            f"Missing columns: {missing_columns}"
-        )
+        logger.error(f"Missing columns: {missing_columns}")
+        raise ValueError(f"Missing columns: {missing_columns}")
 
-    logger.info(
-        f"{file_path.name} loaded successfully "
-        f"({len(df):,} rows)"
-    )
+    logger.info(f"{file_path.name} loaded successfully " f"({len(df):,} rows)")
 
     return df

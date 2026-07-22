@@ -6,7 +6,6 @@ for required fields, uniqueness, numeric ranges, and
 dataset-specific business rules.
 """
 
-
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
 
@@ -30,9 +29,7 @@ def count_nulls(
         Number of null values.
     """
 
-    return dataframe.filter(
-        F.col(column_name).isNull()
-    ).count()
+    return dataframe.filter(F.col(column_name).isNull()).count()
 
 
 def count_duplicate_keys(
@@ -50,15 +47,7 @@ def count_duplicate_keys(
         Number of duplicated key groups.
     """
 
-    return (
-        dataframe
-        .groupBy(*key_columns)
-        .count()
-        .filter(
-            F.col("count") > 1
-        )
-        .count()
-    )
+    return dataframe.groupBy(*key_columns).count().filter(F.col("count") > 1).count()
 
 
 def validate_required_columns(
@@ -88,22 +77,19 @@ def validate_required_columns(
 
     violations = {
         column_name: null_count
-        for column_name, null_count
-        in null_counts.items()
+        for column_name, null_count in null_counts.items()
         if null_count > 0
     }
 
     if violations:
         logger.error(
-            "Required column validation failed | "
-            "dataset=%s | violations=%s",
+            "Required column validation failed | " "dataset=%s | violations=%s",
             dataset_name,
             violations,
         )
 
         raise ValueError(
-            f"Required column validation failed "
-            f"for {dataset_name}: {violations}"
+            f"Required column validation failed " f"for {dataset_name}: {violations}"
         )
 
     logger.info(
@@ -150,8 +136,7 @@ def validate_unique_key(
         )
 
     logger.info(
-        "Unique key validation passed | "
-        "dataset=%s | keys=%s",
+        "Unique key validation passed | " "dataset=%s | keys=%s",
         dataset_name,
         key_columns,
     )
@@ -178,16 +163,12 @@ def validate_numeric_range(
         ValueError: If out-of-range values are found.
     """
 
-    violation_count = (
-        dataframe
-        .filter(
-            ~F.col(column_name).between(
-                minimum,
-                maximum,
-            )
+    violation_count = dataframe.filter(
+        ~F.col(column_name).between(
+            minimum,
+            maximum,
         )
-        .count()
-    )
+    ).count()
 
     if violation_count > 0:
         logger.error(
@@ -208,8 +189,7 @@ def validate_numeric_range(
         )
 
     logger.info(
-        "Numeric range validation passed | "
-        "dataset=%s | column=%s",
+        "Numeric range validation passed | " "dataset=%s | column=%s",
         dataset_name,
         column_name,
     )
@@ -232,19 +212,9 @@ def validate_non_empty_string(
         ValueError: If blank strings are found.
     """
 
-    violation_count = (
-        dataframe
-        .filter(
-            F.col(column_name).isNotNull()
-            & (
-                F.length(
-                    F.trim(F.col(column_name))
-                )
-                == 0
-            )
-        )
-        .count()
-    )
+    violation_count = dataframe.filter(
+        F.col(column_name).isNotNull() & (F.length(F.trim(F.col(column_name))) == 0)
+    ).count()
 
     if violation_count > 0:
         logger.error(
@@ -262,8 +232,7 @@ def validate_non_empty_string(
         )
 
     logger.info(
-        "Non-empty string validation passed | "
-        "dataset=%s | column=%s",
+        "Non-empty string validation passed | " "dataset=%s | column=%s",
         dataset_name,
         column_name,
     )

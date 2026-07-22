@@ -18,9 +18,7 @@ from src.spark_jobs.spark_session import create_spark_session
 def spark() -> SparkSession:
     """Create a Spark session for transformation tests."""
 
-    spark_session = create_spark_session(
-        "Silver Transformation Tests"
-    )
+    spark_session = create_spark_session("Silver Transformation Tests")
 
     yield spark_session
 
@@ -47,10 +45,7 @@ def test_transform_movies(
 
     result = transform_movies(dataframe)
 
-    rows = {
-        row["movieId"]: row
-        for row in result.collect()
-    }
+    rows = {row["movieId"]: row for row in result.collect()}
 
     assert result.count() == 2
     assert rows[1]["title"] == "Toy Story (1995)"
@@ -127,16 +122,8 @@ def test_transform_links(
 
     result = transform_links(dataframe)
 
-    rows = {
-        row["movieId"]: row
-        for row in result.collect()
-    }
+    rows = {row["movieId"]: row for row in result.collect()}
 
     assert rows[1]["tmdbId"] == 862
     assert rows[2]["tmdbId"] is None
-    assert (
-        result.schema["tmdbId"]
-        .dataType
-        .typeName()
-        == "long"
-    )
+    assert result.schema["tmdbId"].dataType.typeName() == "long"

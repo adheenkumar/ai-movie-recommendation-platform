@@ -4,7 +4,6 @@ Links dataset ingestion entry point.
 
 from src.ingestion.ingest_dataset import ingest_dataset
 
-
 LINKS_REQUIRED_COLUMNS = [
     "movieId",
     "imdbId",

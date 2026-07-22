@@ -4,7 +4,6 @@ Movie dataset ingestion entry point.
 
 from src.ingestion.ingest_dataset import ingest_dataset
 
-
 MOVIES_REQUIRED_COLUMNS = [
     "movieId",
     "title",

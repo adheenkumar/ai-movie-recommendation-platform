@@ -30,23 +30,16 @@ def validate_schema(
         ValueError: If columns or data types do not match.
     """
 
-    actual_fields = {
-        field.name: field.dataType
-        for field in dataframe.schema.fields
-    }
+    actual_fields = {field.name: field.dataType for field in dataframe.schema.fields}
 
-    expected_fields = {
-        field.name: field.dataType
-        for field in expected_schema.fields
-    }
+    expected_fields = {field.name: field.dataType for field in expected_schema.fields}
 
     actual_columns = list(actual_fields)
     expected_columns = list(expected_fields)
 
     if actual_columns != expected_columns:
         logger.error(
-            "Schema column mismatch | "
-            "dataset=%s | expected=%s | actual=%s",
+            "Schema column mismatch | " "dataset=%s | expected=%s | actual=%s",
             dataset_name,
             expected_columns,
             actual_columns,
@@ -69,15 +62,13 @@ def validate_schema(
 
     if type_mismatches:
         logger.error(
-            "Schema type mismatch | "
-            "dataset=%s | mismatches=%s",
+            "Schema type mismatch | " "dataset=%s | mismatches=%s",
             dataset_name,
             type_mismatches,
         )
 
         raise ValueError(
-            f"Schema type mismatch for {dataset_name}: "
-            f"{type_mismatches}"
+            f"Schema type mismatch for {dataset_name}: " f"{type_mismatches}"
         )
 
     logger.info(

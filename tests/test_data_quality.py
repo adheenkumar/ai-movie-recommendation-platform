@@ -18,9 +18,7 @@ from src.spark_jobs.spark_session import create_spark_session
 def spark() -> SparkSession:
     """Create a Spark session for quality tests."""
 
-    spark_session = create_spark_session(
-        "Data Quality Tests"
-    )
+    spark_session = create_spark_session("Data Quality Tests")
 
     yield spark_session
 

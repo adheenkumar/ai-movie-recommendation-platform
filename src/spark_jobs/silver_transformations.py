@@ -24,8 +24,7 @@ def transform_movies(
     """
 
     transformed = (
-        dataframe
-        .select(
+        dataframe.select(
             F.col("movieId").cast("long").alias("movieId"),
             F.trim(F.col("title")).alias("title"),
             F.trim(F.col("genres")).alias("genres"),
@@ -65,25 +64,16 @@ def transform_ratings(
     """
 
     transformed = (
-        dataframe
-        .select(
+        dataframe.select(
             F.col("userId").cast("long").alias("userId"),
             F.col("movieId").cast("long").alias("movieId"),
             F.col("rating").cast("double").alias("rating"),
-            F.col("timestamp").cast("long").alias(
-                "sourceTimestamp"
-            ),
+            F.col("timestamp").cast("long").alias("sourceTimestamp"),
         )
-        .filter(
-            F.col("rating").between(0.5, 5.0)
-        )
+        .filter(F.col("rating").between(0.5, 5.0))
         .withColumn(
             "ratingTimestamp",
-            F.to_timestamp(
-                F.from_unixtime(
-                    F.col("sourceTimestamp")
-                )
-            ),
+            F.to_timestamp(F.from_unixtime(F.col("sourceTimestamp"))),
         )
         .dropDuplicates(
             [
@@ -111,28 +101,16 @@ def transform_tags(
     """
 
     transformed = (
-        dataframe
-        .select(
+        dataframe.select(
             F.col("userId").cast("long").alias("userId"),
             F.col("movieId").cast("long").alias("movieId"),
-            F.lower(
-                F.trim(F.col("tag"))
-            ).alias("tag"),
-            F.col("timestamp").cast("long").alias(
-                "sourceTimestamp"
-            ),
+            F.lower(F.trim(F.col("tag"))).alias("tag"),
+            F.col("timestamp").cast("long").alias("sourceTimestamp"),
         )
-        .filter(
-            F.col("tag").isNotNull()
-            & (F.length(F.col("tag")) > 0)
-        )
+        .filter(F.col("tag").isNotNull() & (F.length(F.col("tag")) > 0))
         .withColumn(
             "tagTimestamp",
-            F.to_timestamp(
-                F.from_unixtime(
-                    F.col("sourceTimestamp")
-                )
-            ),
+            F.to_timestamp(F.from_unixtime(F.col("sourceTimestamp"))),
         )
         .dropDuplicates(
             [
@@ -160,14 +138,10 @@ def transform_links(
         Standardized Silver links DataFrame.
     """
 
-    transformed = (
-        dataframe
-        .select(
-            F.col("movieId").cast("long").alias("movieId"),
-            F.col("imdbId").cast("long").alias("imdbId"),
-            F.col("tmdbId").cast("long").alias("tmdbId"),
-        )
-        .dropDuplicates(["movieId"])
-    )
+    transformed = dataframe.select(
+        F.col("movieId").cast("long").alias("movieId"),
+        F.col("imdbId").cast("long").alias("imdbId"),
+        F.col("tmdbId").cast("long").alias("tmdbId"),
+    ).dropDuplicates(["movieId"])
 
     return transformed
