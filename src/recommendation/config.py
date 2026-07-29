@@ -16,16 +16,19 @@ MINIMUM_VOTES: int = 10
 # Hybrid Weights
 # ---------------------------------------------------------------------
 
-CONTENT_WEIGHT: float = 0.40
+CONTENT_WEIGHT: float = 0.30
 
-COLLABORATIVE_WEIGHT: float = 0.40
+COLLABORATIVE_WEIGHT: float = 0.30
 
 POPULARITY_WEIGHT: float = 0.20
+
+SEMANTIC_WEIGHT: float = 0.20
 
 HYBRID_WEIGHTS: dict[str, float] = {
     "content": CONTENT_WEIGHT,
     "collaborative": COLLABORATIVE_WEIGHT,
     "popularity": POPULARITY_WEIGHT,
+    "semantic": SEMANTIC_WEIGHT,
 }
 
 # ---------------------------------------------------------------------

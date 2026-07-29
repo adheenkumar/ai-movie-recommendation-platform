@@ -33,3 +33,13 @@ for directory in [
     MODELS_DIR,
 ]:
     directory.mkdir(parents=True, exist_ok=True)
+
+MODEL_DIR = PROJECT_ROOT / "models"
+
+SENTENCE_MODEL_DIR = MODEL_DIR / "sentence_transformer"
+
+FAISS_MODEL_DIR = MODEL_DIR / "faiss"
+
+MODEL_DIR.mkdir(parents=True, exist_ok=True)
+SENTENCE_MODEL_DIR.mkdir(parents=True, exist_ok=True)
+FAISS_MODEL_DIR.mkdir(parents=True, exist_ok=True)
