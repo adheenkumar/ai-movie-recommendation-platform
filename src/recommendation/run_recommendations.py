@@ -92,6 +92,12 @@ def build_parser() -> argparse.ArgumentParser:
         help="Number of recommendations.",
     )
 
+    parser.add_argument(
+        "--semantic-query",
+        default=None,
+        help="Natural language query for semantic recommendations.",
+    )
+
     return parser
 
 
@@ -131,6 +137,7 @@ def main() -> None:
             ),
             "hybrid": lambda: HybridRecommender(spark).recommend(
                 args.movie,
+                semantic_query=args.semantic_query,
                 top_n=args.top,
             ),
         }
