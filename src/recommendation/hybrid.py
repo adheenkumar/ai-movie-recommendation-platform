@@ -15,6 +15,7 @@ from src.recommendation.models import RecommendationResult
 from src.recommendation.popularity import get_top_movies
 from src.recommendation.ranking import rank_recommendations
 from src.utils.logger import get_logger
+from src.recommendation.semantic_recommender import SemanticRecommender
 
 logger = get_logger(__name__)
 
@@ -40,12 +41,14 @@ class HybridRecommender:
 
         self.content = ContentBasedRecommender(spark)
         self.collaborative = CollaborativeRecommender(spark)
+        self.semantic = SemanticRecommender()
 
         logger.info("Hybrid recommender initialized successfully.")
 
     def recommend(
         self,
-        movie_title: str,
+        movie_title: str | None = None,
+        semantic_query: str | None = None,
         top_n: int = DEFAULT_TOP_N,
     ) -> list[RecommendationResult]:
         """
@@ -64,37 +67,53 @@ class HybridRecommender:
         list[RecommendationResult]
         """
 
-        logger.info(
-            "Generating hybrid recommendations for '%s'.",
-            movie_title,
-        )
+        content_results = []
+        collaborative_results = []
 
-        content_results = self.content.recommend(
-            movie_title,
-            top_n=top_n,
-        )
+        if movie_title:
+            content_results = self.content.recommend(
+                movie_title,
+                top_n,
+            )
 
-        collaborative_results = self.collaborative.recommend(
-            movie_title,
-            top_n=top_n,
-        )
+            collaborative_results = self.collaborative.recommend(
+                movie_title,
+                top_n,
+            )
 
         popularity_results = get_top_movies(
             self.spark,
             top_n=top_n,
         )
 
+        semantic_results = []
+
+        if semantic_query:
+            semantic_results = self.semantic.recommend(
+                query=semantic_query,
+                top_k=top_n,
+            )
+
         recommendations = rank_recommendations(
             content=content_results,
             collaborative=collaborative_results,
             popularity=popularity_results,
+            semantic=semantic_results,
         )
 
         recommendations = recommendations[:top_n]
 
-        logger.info(
-            "Generated %d hybrid recommendations.",
-            len(recommendations),
-        )
+        if movie_title:
+            logger.info(
+                "Generating hybrid recommendations using movie title '%s'.",
+                movie_title,
+            )
+        elif semantic_query:
+            logger.info(
+                "Generating hybrid recommendations using semantic query '%s'.",
+                semantic_query,
+            )
+        else:
+            logger.info("Generating popularity-based recommendations.")
 
         return recommendations

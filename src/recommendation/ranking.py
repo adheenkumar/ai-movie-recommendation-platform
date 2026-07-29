@@ -137,6 +137,7 @@ def rank_recommendations(
     content: list[RecommendationResult],
     collaborative: list[RecommendationResult],
     popularity: list[RecommendationResult],
+    semantic: list[RecommendationResult],
 ) -> list[RecommendationResult]:
     """
     Combine multiple recommendation sources into
@@ -166,6 +167,7 @@ def rank_recommendations(
     merge_candidates(records, content)
     merge_candidates(records, collaborative)
     merge_candidates(records, popularity)
+    merge_candidates(records, semantic)
 
     logger.info(
         "Merged %d unique candidate movies.",
