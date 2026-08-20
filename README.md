@@ -275,6 +275,7 @@ ai-movie-recommendation-platform/
 ## Setup
 ### 1. Clone the repository
 ```text
+</> PowerShell
 git clone <repository-url>
 cd ai-movie-recommendation-platform
 ```
@@ -282,11 +283,13 @@ cd ai-movie-recommendation-platform
 
 Windows:
 ```text
+</> PowerShell
 python -m venv .venv
 .venv\Scripts\Activate.ps1
 ```
 ### 3. Install dependencies
 ```text
+</> PowerShell
 pip install -r requirements.txt
 ```
 ### 4. Prepare the MovieLens dataset
@@ -306,18 +309,22 @@ links.csv
 ## Running the Data Pipeline
 ### Ingestion
 ```text
+</> PowerShell
 python -m src.ingestion.run_ingestion
 ```
 ### Silver ETL
 ```text
+</> PowerShell
 python -m src.spark_jobs.run_silver_etl
 ```
 ### Gold pipeline
 ```text
+</> PowerShell
 python -m src.gold.run_gold
 ```
 ### Build embeddings
 ```text
+</> PowerShell
 python -m src.embeddings.run_embeddings
 ```
 ## Running the Dashboard
@@ -326,7 +333,8 @@ Make sure Ollama is running locally when using AI Search.
 
 Start Streamlit:
 ```text
-streamlit run src/dashboard/app.py
+</> PowerShell
+python -m streamlit run src/dashboard/app.py
 ```
 The dashboard provides:
 
@@ -338,6 +346,7 @@ The dashboard provides:
 
 Run the complete test suite:
 ```text
+</> PowerShell
 python -m pytest -v
 ```
 Current result:
@@ -346,6 +355,7 @@ Current result:
 ```
 Run Ruff:
 ```text
+</> PowerShell
 ruff check .
 ```
 Current result:
