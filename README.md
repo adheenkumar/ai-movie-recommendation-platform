@@ -328,6 +328,13 @@ Start Streamlit:
 ```text
 python -m streamlit run src/dashboard/app.py
 ```
+
+For Offline:
+```text
+$env:HF_HUB_OFFLINE="1"
+$env:TRANSFORMERS_OFFLINE="1"
+python -m streamlit run src/dashboard/app.py
+```
 The dashboard provides:
 
 - Movie title recommendations
