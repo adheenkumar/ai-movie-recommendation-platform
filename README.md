@@ -1,162 +1,401 @@
 # AI Movie Recommendation Platform
 
-An end-to-end movie recommendation platform built using modern Data Engineering and Machine Learning practices.
+An end-to-end AI-powered movie recommendation platform built with modern
+Data Engineering, Machine Learning, semantic search, and local LLM technologies.
 
-**Current Technologies**
-
-- PySpark
-- Scikit-learn
-- Pandas
-- NumPy
-- Parquet
-- Pytest
-- Black
-- Ruff
-
-**Upcoming**
-
-- Sentence Transformers
-- FAISS
-- Ollama
-- Streamlit
-- PostgreSQL
-
-> 🚧 **Project Status:** Sprint 5 Completed (Recommendation Engine)
+The platform processes MovieLens data through a Bronze/Silver/Gold data pipeline
+and provides multiple recommendation strategies through an interactive Streamlit
+dashboard.
 
 ---
 
 ## Project Status
 
-### Sprint 1 - Project Setup
+**Status: Completed and tested**
 
-- [x] Repository initialization
-- [x] Project structure
-- [x] Python package structure
-- [x] Virtual environment setup
-- [x] Configuration management
-- [x] Logging framework
-- [x] Unit testing setup
+- 27 automated tests passing
+- Ruff static analysis passing
+- End-to-end Streamlit dashboard verified
+- Local Ollama integration verified
 
 ---
 
-### Sprint 2 - Data Ingestion and Bronze Layer
+## Key Features
 
-- [x] MovieLens raw dataset integration
-- [x] Centralized logging
-- [x] Centralized path management
-- [x] CSV structural validation
-- [x] Reusable dataset ingestion engine
-- [x] Multi-dataset ingestion orchestration
-- [x] Bronze Parquet layer
-- [x] Automated data quality profiling
-- [x] Pytest quality report validation
+### Data Engineering
 
----
+- MovieLens dataset ingestion
+- CSV structural validation
+- Centralized logging and path management
+- Bronze/Silver/Gold data architecture
+- PySpark ETL processing
+- Explicit schema enforcement
+- Data quality validation
+- Parquet-based storage
+- Gold-layer analytics and recommendation features
 
-### Sprint 3 - PySpark Silver ETL
+### Recommendation Engine
 
-- [x] Centralized Spark session configuration
-- [x] Bronze schema inspection
-- [x] Explicit Silver schema contracts
-- [x] Bronze-to-Silver PySpark transformations
-- [x] Unix timestamp conversion
-- [x] Text normalization
-- [x] Identifier type standardization
-- [x] Schema contract validation
-- [x] Required-column validation
-- [x] Unique-key validation
-- [x] Numeric-range validation
-- [x] Non-empty string validation
-- [x] Silver data quality validation
-- [x] Silver Parquet output
-- [x] Automated PySpark regression tests
+The platform combines multiple recommendation approaches:
 
----
+- Popularity-based recommendation
+- Content-based recommendation using TF-IDF
+- Collaborative filtering
+- Semantic recommendation using Sentence Transformers
+- FAISS vector similarity search
+- Hybrid recommendation ranking
+- Score normalization and weighted ranking
+- Configurable recommendation settings
 
-### Sprint 4 - Gold Analytics and Recommendation Features
+### AI / LLM
 
-- [x] Movie rating aggregates
-- [x] Popularity metrics
-- [x] Bayesian weighted rating score
-- [x] Genre-level analytics
-- [x] User preference profiles
-- [x] Recommendation feature dataset
-- [x] Gold Parquet output
-- [x] Gold pipeline orchestration
-- [x] Gold dataset inspection utilities
+- Natural-language movie search
+- Query intent extraction
+- Local Ollama LLM integration
+- AI-generated recommendation explanations
+- Prompt-based recommendation reasoning
 
----
+### Dashboard
 
-### Sprint 5 - Recommendation Engine
+Built with Streamlit:
 
-- [x] Recommendation domain models
-- [x] Popularity-based recommender
-- [x] Content-based recommender (TF-IDF)
-- [x] Collaborative filtering recommender
-- [x] Hybrid recommendation engine
-- [x] Weighted hybrid ranking
-- [x] Recommendation score normalization
-- [x] Offline recommendation evaluator
-- [x] Precision@K evaluation
-- [x] Recall@K evaluation
-- [x] F1-score evaluation
-- [x] Hit Rate evaluation
-- [x] Recommendation CLI
-- [x] User-friendly error handling
-- [x] Configurable recommendation settings
-- [x] Recommendation logging
-- [x] Unit tests
-- [x] Black code formatting
-- [x] Ruff static analysis
+- Home page
+- Movie title recommendation
+- Fuzzy movie-title search and suggestions
+- Natural-language AI search
+- Recommendation movie cards
+- Detailed recommendation table
+- Genre analytics
+- Movie rating analytics
+- User preference analytics
 
 ---
 
-### Sprint 6 - Semantic Search (Upcoming)
+## Architecture
 
-- [ ] Sentence Transformers
-- [ ] Movie embedding generation
-- [ ] FAISS vector index
-- [ ] Semantic similarity search
-- [ ] Embedding persistence
-- [ ] Hybrid semantic recommendations
+```text
+                    MovieLens Dataset
+                           |
+                           v
+                  +------------------+
+                  |    Ingestion     |
+                  | Validation / DQ  |
+                  +--------+---------+
+                           |
+                           v
+                    Bronze Layer
+                     Parquet
+                           |
+                           v
+                  +------------------+
+                  |    PySpark ETL   |
+                  | Schema + Quality |
+                  +--------+---------+
+                           |
+                           v
+                    Silver Layer
+                     Parquet
+                           |
+                           v
+                  +------------------+
+                  |   Gold Layer     |
+                  | Analytics +      |
+                  | Recommendation   |
+                  | Features         |
+                  +--------+---------+
+                           |
+              +------------+-------------+
+              |            |             |
+              v            v             v
+        Content-based  Collaborative  Popularity
+              |            |             |
+              +------------+-------------+
+                           |
+                           v
+                    Hybrid Ranking
+                           |
+              +------------+-------------+
+              |                          |
+              v                          v
+       Movie Title Search        Semantic Search
+                                  |
+                           Sentence Transformer
+                                  |
+                                 FAISS
+                                  |
+                                  v
+                         Recommendation Results
+                                  |
+                                  v
+                           Ollama Explanation
+                                  |
+                                  v
+                         Streamlit Dashboard
+```
 
----
+## Recommendation Flow
+### Movie Title Recommendation
+```text
+User enters movie title
+        |
+        v
+Movie Search / Title Resolution
+        |
+        v
+Content + Collaborative + Popularity
+        |
+        v
+Score Normalization
+        |
+        v
+Weighted Hybrid Ranking
+        |
+        v
+Top-N Recommendations
+```
 
-### Sprint 7 - Local LLM Integration (Planned)
+### Natural-Language Recommendation
+```text
+User query
+    |
+    v
+Semantic Search
+    |
+    v
+Sentence Transformer Embeddings
+    |
+    v
+FAISS Similarity Search
+    |
+    v
+Recommendation Ranking
+    |
+    v
+Ollama
+    |
+    v
+AI Explanation + Recommendations
+```
 
-- [ ] Ollama integration
-- [ ] Natural language movie search
-- [ ] AI-generated recommendation explanations
-- [ ] Conversational recommendation interface
+## Data Architecture
 
----
+The project follows a Medallion-style architecture.
 
-### Sprint 8 - Streamlit Dashboard (Planned)
+```text
+data/
+├── raw/
+│   ├── movies.csv
+│   ├── ratings.csv
+│   ├── tags.csv
+│   └── links.csv
+│
+├── bronze/
+│
+├── silver/
+│
+└── gold/
+```
 
-- [ ] Interactive dashboard
-- [ ] Search interface
-- [ ] Recommendation visualization
-- [ ] Genre analytics
-- [ ] User-friendly UI
+### Bronze
 
----
+Raw datasets are validated and converted into Parquet format.
 
-### Sprint 9 - Production Features (Planned)
+### Silver
 
-- [ ] Configuration management improvements
-- [ ] Performance optimization
-- [ ] Model persistence
-- [ ] Docker support
-- [ ] CI/CD pipeline
-- [ ] Documentation updates
+PySpark transformations perform:
 
----
+- Schema enforcement
+- Type standardization
+- Timestamp conversion
+- Text normalization
+- Data quality validation
 
-### Sprint 10 - Deployment & Documentation (Planned)
+### Gold
 
-- [ ] Complete project documentation
-- [ ] Architecture diagrams
-- [ ] API documentation
-- [ ] Deployment guide
-- [ ] Portfolio-ready README
-- [ ] Demo screenshots
+Business-ready datasets contain:
+
+- Movie metrics
+- Genre metrics
+- User preference profiles
+- Recommendation features
+
+## Technology Stack
+
+| Category         | Technology |
+|------------------| --- |
+| Programming      | Python |
+| Data Processing  | PySpark |
+| Data Analysis    | Pandas, NumPy |
+| Storage          | Parquet |
+| Machine Learning | Scikit-learn |
+| Embeddings       | Sentence Transformers |
+| Vector Search    | FAISS |
+| LLM              | Ollama |
+| Dashboard        | Streamlit |
+| Testing          | Pytest |
+| Code Quality     | Ruff |
+| Version Control  | Git |
+
+## Project Structure
+```text
+ai-movie-recommendation-platform/
+│
+├── data/
+│   ├── raw/
+│   ├── bronze/
+│   ├── silver/
+│   └── gold/
+│
+├── models/
+│   └── faiss/
+│
+├── notebooks/
+│
+├── src/
+│   ├── config/
+│   ├── dashboard/
+│   ├── embeddings/
+│   ├── gold/
+│   ├── ingestion/
+│   ├── llm/
+│   ├── recommendation/
+│   ├── spark_jobs/
+│   ├── utils/
+│   └── vector_store/
+│
+├── tests/
+│
+├── docs/
+├── requirements.txt
+├── pyproject.toml
+├── .gitignore
+└── README.md
+```
+
+## Setup
+### 1. Clone the repository
+```text
+git clone <repository-url>
+cd ai-movie-recommendation-platform
+```
+### 2. Create a virtual environment
+
+Windows:
+```text
+python -m venv .venv
+.venv\Scripts\Activate.ps1
+```
+### 3. Install dependencies
+```text
+pip install -r requirements.txt
+```
+### 4. Prepare the MovieLens dataset
+
+Place the MovieLens CSV files in:
+```text
+data/raw/
+```
+Required files:
+```text
+movies.csv
+ratings.csv
+tags.csv
+links.csv
+```
+
+## Running the Data Pipeline
+### Ingestion
+```text
+python -m src.ingestion.run_ingestion
+```
+### Silver ETL
+```text
+python -m src.spark_jobs.run_silver_etl
+```
+### Gold pipeline
+```text
+python -m src.gold.run_gold
+```
+### Build embeddings
+```text
+python -m src.embeddings.run_embeddings
+```
+## Running the Dashboard
+
+Make sure Ollama is running locally when using AI Search.
+
+Start Streamlit:
+```text
+streamlit run src/dashboard/app.py
+```
+The dashboard provides:
+
+- Movie title recommendations
+- AI natural-language recommendations
+- Recommendation details
+- Analytics
+## Testing
+
+Run the complete test suite:
+```text
+python -m pytest -v
+```
+Current result:
+```text
+27 passed
+```
+Run Ruff:
+```text
+ruff check .
+```
+Current result:
+```text
+All checks passed!
+```
+## Recommendation Architecture
+
+The hybrid recommendation engine combines:
+```text
+Content-Based
+      +
+Collaborative Filtering
+      +
+Popularity
+      |
+      v
+Score Normalization
+      |
+      v
+Weighted Hybrid Ranking
+```
+For natural-language queries:
+```text
+Natural Language Query
+        |
+        v
+Semantic Search
+        |
+        v
+FAISS
+        |
+        v
+Recommendation Ranking
+        |
+        v
+Ollama Explanation
+```
+## Data Quality
+
+The pipeline includes validation for:
+
+- Required columns
+- Null values
+- Duplicate keys
+- Numeric ranges
+- Empty strings
+- Schema mismatches
+
+Automated tests cover these validation rules.
+## License
+
+This project is intended as a portfolio and learning project.

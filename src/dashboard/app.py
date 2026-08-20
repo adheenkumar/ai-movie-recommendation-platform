@@ -45,7 +45,7 @@ def get_recommendation_service() -> RecommendationService:
 
                 service = RecommendationService(
                     spark=spark,
-                   progress_callback=status.write,
+                    progress_callback=status.write,
                 )
 
                 status.update(

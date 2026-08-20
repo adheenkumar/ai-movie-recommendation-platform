@@ -77,36 +77,47 @@ def normalize_scores(
     """
     Apply Min-Max normalization independently
     for each recommendation algorithm.
+
+    Only candidates actually returned by an
+    algorithm participate in that algorithm's
+    normalization.
     """
 
     for algorithm in HYBRID_WEIGHTS:
 
-        values = [record.scores.get(algorithm, 0.0) for record in records.values()]
+        scored_records = [
+            record
+            for record in records.values()
+            if algorithm in record.scores
+        ]
 
-        if not values:
+        if not scored_records:
             continue
+
+        values = [
+            record.scores[algorithm]
+            for record in scored_records
+        ]
 
         minimum = min(values)
         maximum = max(values)
 
         if maximum == minimum:
 
-            for record in records.values():
+            for record in scored_records:
                 record.scores[algorithm] = 1.0
 
             continue
 
         denominator = maximum - minimum
 
-        for record in records.values():
+        for record in scored_records:
 
-            value = record.scores.get(
-                algorithm,
-                0.0,
-            )
+            value = record.scores[algorithm]
 
-            record.scores[algorithm] = (value - minimum) / denominator
-
+            record.scores[algorithm] = (
+                value - minimum
+            ) / denominator
 
 # ---------------------------------------------------------------------
 # Hybrid Score Calculation
@@ -153,6 +164,9 @@ def rank_recommendations(
 
     popularity:
         Popularity-based recommendations.
+
+    semantic:
+        Semantic search recommendations.
 
     Returns
     -------

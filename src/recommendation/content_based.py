@@ -23,9 +23,12 @@ from src.recommendation.models import (
 from src.utils.logger import get_logger
 from src.utils.paths import GOLD_DATA_DIR
 
+
 logger = get_logger(__name__)
 
-RECOMMENDATION_FEATURES_PATH = GOLD_DATA_DIR / "recommendation_features.parquet"
+RECOMMENDATION_FEATURES_PATH = (
+    GOLD_DATA_DIR / "recommendation_features.parquet"
+)
 
 
 class ContentBasedRecommender:
@@ -48,21 +51,40 @@ class ContentBasedRecommender:
 
         self.vectorizer = self._build_vectorizer()
 
-        self.similarity_matrix = self._build_similarity_matrix()
+        self.similarity_matrix = (
+            self._build_similarity_matrix()
+        )
 
         logger.info(
             "Content recommender initialized with %d movies.",
             len(self.movies),
         )
 
+    # --------------------------------------------------
+    # Data Loading
+    # --------------------------------------------------
+
     def _load_movies(self) -> pd.DataFrame:
         """
         Load recommendation features.
         """
 
-        logger.info("Loading recommendation features.")
+        logger.info(
+            "Loading recommendation features."
+        )
 
-        return self.spark.read.parquet(str(RECOMMENDATION_FEATURES_PATH)).toPandas()
+        return (
+            self.spark
+            .read
+            .parquet(
+                str(RECOMMENDATION_FEATURES_PATH)
+            )
+            .toPandas()
+        )
+
+    # --------------------------------------------------
+    # Data Preparation
+    # --------------------------------------------------
 
     def _prepare_movies(self) -> None:
         """
@@ -70,15 +92,44 @@ class ContentBasedRecommender:
         """
 
         self.movies = self.movies[
-            self.movies["ratingCount"] >= self.minimum_votes
+            self.movies["ratingCount"]
+            >= self.minimum_votes
         ].reset_index(drop=True)
 
-        self.movies["normalizedTitle"] = self.movies["title"].str.lower().str.strip()
+        self.movies["normalizedTitle"] = (
+            self.movies["title"]
+            .str.lower()
+            .str.strip()
+        )
 
         logger.info(
             "Retained %d movies after vote filtering.",
             len(self.movies),
         )
+
+    # --------------------------------------------------
+    # Available Movie Titles
+    # --------------------------------------------------
+
+    def get_available_titles(
+        self,
+    ) -> list[str]:
+        """
+        Return titles available to the recommendation
+        engine.
+
+        Returns
+        -------
+        list[str]
+            Movie titles that passed the recommendation
+            engine's minimum vote filter.
+        """
+
+        return self.movies["title"].tolist()
+
+    # --------------------------------------------------
+    # TF-IDF
+    # --------------------------------------------------
 
     def _build_vectorizer(
         self,
@@ -87,27 +138,43 @@ class ContentBasedRecommender:
         Build TF-IDF vectorizer.
         """
 
-        logger.info("Building TF-IDF matrix.")
+        logger.info(
+            "Building TF-IDF matrix."
+        )
 
         vectorizer = TfidfVectorizer(
             stop_words=CONTENT_STOP_WORDS,
         )
 
-        self.tfidf_matrix = vectorizer.fit_transform(self.movies["contentText"])
+        self.tfidf_matrix = (
+            vectorizer.fit_transform(
+                self.movies["contentText"]
+            )
+        )
 
         return vectorizer
+
+    # --------------------------------------------------
+    # Similarity Matrix
+    # --------------------------------------------------
 
     def _build_similarity_matrix(self):
         """
         Compute cosine similarity matrix.
         """
 
-        logger.info("Computing cosine similarity matrix.")
+        logger.info(
+            "Computing cosine similarity matrix."
+        )
 
         return cosine_similarity(
             self.tfidf_matrix,
             self.tfidf_matrix,
         )
+
+    # --------------------------------------------------
+    # Movie Lookup
+    # --------------------------------------------------
 
     def _find_movie_index(
         self,
@@ -117,19 +184,35 @@ class ContentBasedRecommender:
         Locate a movie by title.
         """
 
-        normalized = movie_title.lower().strip()
+        normalized = (
+            movie_title
+            .lower()
+            .strip()
+        )
 
         matches = self.movies[
-            self.movies["normalizedTitle"].str.contains(
+            self.movies[
+                "normalizedTitle"
+            ].str.contains(
                 normalized,
                 regex=False,
             )
         ]
 
         if matches.empty:
-            raise ValueError(f"No movie matching '{movie_title}' was found.")
 
-        return int(matches.index[0])
+            raise ValueError(
+                f"No movie matching "
+                f"'{movie_title}' was found."
+            )
+
+        return int(
+            matches.index[0]
+        )
+
+    # --------------------------------------------------
+    # Recommendation Builder
+    # --------------------------------------------------
 
     def _build_recommendation(
         self,
@@ -137,23 +220,40 @@ class ContentBasedRecommender:
         score: float,
     ) -> RecommendationResult:
         """
-        Convert dataframe row into RecommendationResult.
+        Convert dataframe row into
+        RecommendationResult.
         """
 
         return RecommendationResult(
             recommendation=MovieRecommendation(
-                movie_id=int(row.movieId),
+                movie_id=int(
+                    row.movieId
+                ),
                 title=row.title,
-                release_year=int(row.releaseYear),
+                release_year=int(
+                    row.releaseYear
+                ),
                 genres=row.genres,
-                rating_count=int(row.ratingCount),
-                average_rating=float(row.averageRating),
-                weighted_rating=float(row.weightedRating),
-                popularity_score=float(row.popularityScore),
+                rating_count=int(
+                    row.ratingCount
+                ),
+                average_rating=float(
+                    row.averageRating
+                ),
+                weighted_rating=float(
+                    row.weightedRating
+                ),
+                popularity_score=float(
+                    row.popularityScore
+                ),
             ),
             score=float(score),
             source="content",
         )
+
+    # --------------------------------------------------
+    # Recommendation
+    # --------------------------------------------------
 
     def recommend(
         self,
@@ -164,16 +264,28 @@ class ContentBasedRecommender:
         Recommend similar movies.
         """
 
-        movie_index = self._find_movie_index(movie_title)
+        movie_index = (
+            self._find_movie_index(
+                movie_title
+            )
+        )
 
-        scores = list(enumerate(self.similarity_matrix[movie_index]))
+        scores = list(
+            enumerate(
+                self.similarity_matrix[
+                    movie_index
+                ]
+            )
+        )
 
         scores.sort(
             key=lambda x: x[1],
             reverse=True,
         )
 
-        recommendations: List[RecommendationResult] = []
+        recommendations: List[
+            RecommendationResult
+        ] = []
 
         for index, similarity in scores:
 
@@ -189,11 +301,15 @@ class ContentBasedRecommender:
                 )
             )
 
-            if len(recommendations) >= top_n:
+            if (
+                len(recommendations)
+                >= top_n
+            ):
                 break
 
         logger.info(
-            "Generated %d content-based recommendations for '%s'.",
+            "Generated %d content-based "
+            "recommendations for '%s'.",
             len(recommendations),
             movie_title,
         )

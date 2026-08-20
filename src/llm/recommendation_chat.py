@@ -106,13 +106,21 @@ class RecommendationChat:
 
             return self.llm.generate(prompt)
 
-        except Exception:
+
+        except Exception as exc:
+
             logger.exception(
+
                 "Failed to generate AI explanation."
+
             )
 
             return (
-                "Sorry, I couldn't generate an explanation for these recommendations."
+
+                f"AI explanation failed: "
+
+                f"{type(exc).__name__}: {exc}"
+
             )
 
         finally:

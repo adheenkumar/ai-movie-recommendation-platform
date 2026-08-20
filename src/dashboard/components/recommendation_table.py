@@ -35,7 +35,7 @@ def render(
                 "Average Rating": round(movie.average_rating, 2),
                 "Ratings": movie.rating_count,
                 "Source": result.source,
-                "Hybrid Score": round(result.score, 3),
+                "Recommendation Score": round(result.score, 3),
             }
         )
 

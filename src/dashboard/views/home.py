@@ -54,7 +54,6 @@ def render() -> None:
         - FAISS
         - Sentence Transformers
         - Ollama
-        - SQLite / PostgreSQL
         """
     )
 

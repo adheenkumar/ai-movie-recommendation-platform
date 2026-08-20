@@ -1,12 +1,39 @@
-.venv
+# Virtual environments
+.venv/
+venv/
+
+# IDEs
+.idea/
+.vscode/
+
+# Python cache
 __pycache__/
-.idea
-.vscode
+*.py[cod]
+
+# Test / lint caches
 .pytest_cache/
-.mypy_cache
-*.db
+.ruff_cache/
+.mypy_cache/
+
+# Logs
 logs/
 *.log
+
+# Local databases
+*.db
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Local model cache
+models/sentence_transformer/
+
+# Generated data
 data/bronze/
 data/silver/
 data/gold/
+
+# Temporary files
+*.tmp
+*.temp
